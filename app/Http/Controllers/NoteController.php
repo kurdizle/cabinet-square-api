@@ -22,7 +22,7 @@ class NoteController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $data = DB::table('notes')->where('user_id', '=', $user->id)->get();
+        $data = DB::table('notes')->where('user_id', '=', $user->id)->orderby('id', 'desc')->get();
 
         if ( !$user ) {
             return response()->json([
@@ -44,10 +44,11 @@ class NoteController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
         $data = Note::create([
             'title' => $request->title,
             'content' => $request->content,
-            'user_id' => 1,
+            'user_id' => $user->id,
         ]);
 
         return response()->json([
@@ -65,7 +66,9 @@ class NoteController extends Controller
     {
         $data = Note::find($id);
 
-        return $data;
+        return response()->json([
+          'note' => $data,
+        ], Response::HTTP_OK);
     }
 
     /**
