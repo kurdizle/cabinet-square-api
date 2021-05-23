@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class NoteController extends Controller
 {
     public function __construct()
     {
-
+        $this->middleware('auth:api', ['except' => []]);
     }
     /**
      * Display a listing of the resource.
@@ -20,9 +21,19 @@ class NoteController extends Controller
      */
     public function index()
     {
-        $data = Note::all();
+        $user = Auth::user();
+        $data = DB::table('notes')->where('user_id', '=', $user->id)->get();
 
-        return $data;
+        if ( !$user ) {
+            return response()->json([
+                'error' => 'Unathorized'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        return response()->json([
+          'notes' => $data,
+          'user' => $user,
+        ], Response::HTTP_OK);
     }
 
     /**
