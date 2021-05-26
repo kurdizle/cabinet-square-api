@@ -22,7 +22,10 @@ class NoteController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $data = DB::table('notes')->where('user_id', '=', $user->id)->orderby('id', 'desc')->get();
+        $data = DB::table('notes')
+                    ->where('user_id', '=', $user->id)
+                    ->orderby('updated_at', 'desc')
+                    ->get();
 
         if ( !$user ) {
             return response()->json([
@@ -64,11 +67,24 @@ class NoteController extends Controller
      */
     public function show($id)
     {
-        $data = Note::find($id);
+        $user = Auth::user();
+        $data = DB::table('notes')
+                    ->where([
+                        ['id', '=', $id],
+                        ['user_id', '=', $user->id],
+                    ])
+                    ->get();
+
+        if ( isset($data[0]) ) {
+            return response()->json([
+                'note' => $data,
+                'user' => $user,
+              ], Response::HTTP_OK);
+        }
 
         return response()->json([
-          'note' => $data,
-        ], Response::HTTP_OK);
+            'error' => 'Not found'
+        ], Response::HTTP_NOT_FOUND);
     }
 
     /**
