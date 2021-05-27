@@ -72,7 +72,7 @@ class NoteController extends Controller
         $user = Auth::user();
         $data = DB::table('notes')
                     ->where([
-                        ['id', '=', $id],
+                        ['note_id', '=', $id],
                         ['user_id', '=', $user->id],
                     ])
                     ->get();
@@ -98,7 +98,7 @@ class NoteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Note::find($id);
+        $post = DB::table('notes')->where('note_id' , '=', $id);
         $data = $post->update([
             'title' => $request->title,
             'content' => $request->content,
@@ -117,7 +117,7 @@ class NoteController extends Controller
      */
     public function destroy($id)
     {
-        $post = Note::find($id);
+        $post = DB::table('notes')->where('note_id', '=', $id);
         $data = $post->delete();
 
         return $data;
