@@ -14,7 +14,7 @@ class AddNoteIdToNotesTable extends Migration
     public function up()
     {
         Schema::table('notes', function (Blueprint $table) {
-            $table->string('note_id')->after('user_id');
+            $table->string('note_id')->after('user_id')->unique();
         });
     }
 
