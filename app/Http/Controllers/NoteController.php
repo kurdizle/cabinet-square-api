@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Str;
 
 class NoteController extends Controller
 {
@@ -52,6 +53,7 @@ class NoteController extends Controller
             'title' => $request->title,
             'content' => $request->content,
             'user_id' => $user->id,
+            'note_id' => Str::random(30)
         ]);
 
         return response()->json([
