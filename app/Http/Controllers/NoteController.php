@@ -98,7 +98,7 @@ class NoteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = DB::table('notes')->where('note_id' , '=', $id);
+        $post = Note::where('note_id', $id)->first();
         $data = $post->update([
             'title' => $request->title,
             'content' => $request->content,
